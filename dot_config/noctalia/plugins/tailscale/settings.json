@@ -1,0 +1,11 @@
+{
+  "refreshInterval": 5000,
+  "compactMode": true,
+  "showIpAddress": false,
+  "showPeerCount": false,
+  "hideDisconnected": true,
+  "hideMullvadExitNodes": true,
+  "terminalCommand": "alacritty",
+  "pingCount": 5,
+  "defaultPeerAction": "copy-ip"
+}
