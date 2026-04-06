@@ -4,3 +4,7 @@ Host github.com
   IdentityFile ~/.ssh/github
   AddKeysToAgent yes
 
+Host storage
+  Hostname storage.home.eddiestech.diy
+  user lurch
+  IdentityFile ~/.ssh/github
