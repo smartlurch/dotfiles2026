@@ -1,6 +1,8 @@
 pacman -Syu
 pacman -S paru
 paru -S sddm fuzzel niri cachyos-niri-noctalia noctalia cosmic-text-editor bazaar ente-auth-bin redshift wlsunset neovim nodejs npm steam-devices tailscale trayscale gammastep flatpak
+paru -S sddm-theme-noctalia
+sudo cp ~./sddm.conf /etc/sddm.conf
 sudo systemctl enable -f sddm
 
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
