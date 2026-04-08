@@ -1,0 +1,91 @@
+---
+- name: Setup Niri Desktop Environment
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    # List of official Arch packages
+    pacman_packages:
+      - sddm
+      - niri
+      - fzf
+      - fuzzel
+      - cosmic-text-editor
+      - neovim
+      - nodejs
+      - npm
+      - steam-devices
+      - flatpak
+      - bazaar
+      - tailscale
+      - wlsunset
+      - gammastep
+
+    # List of AUR packages (requires paru)
+    aur_packages:
+      - cachyos-niri-noctalia
+      - noctalia
+      - sddm-theme-noctalia
+      - trayscale
+
+    # List of Flatpaks
+    flatpaks:
+      - com.bitwarden.desktop
+      - net.cozic.joplin.desktop
+      - org.onlyoffice.desktopeditors
+      - com.google.Chrome
+      - com.valvesoftware.steam
+      - dev.zed.Zed
+      - page.kramo.Cartridges
+      - io.ente.auth
+      - com.heroicgameslauncher.hgl
+
+  tasks:
+    - name: Update pacman cache and upgrade system
+      community.general.pacman:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install official packages via pacman
+      community.general.pacman:
+        name: "{{ pacman_packages }}"
+        state: present
+
+    - name: Install AUR packages via paru
+      become: false  # AUR helpers should not be run as root
+      ansible.builtin.command:
+        cmd: "paru -S --needed --noconfirm {{ item }}"
+      loop: "{{ aur_packages }}"
+      register: paru_result
+      changed_when: "'Installing' in paru_result.stdout"
+
+    - name: Configure SDDM
+      ansible.builtin.copy:
+        src: ~/sddm.conf  # Ensure this file exists on your control machine
+        dest: /etc/sddm.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable and start system services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      loop:
+        - sddm
+        - tailscaled
+
+    - name: Add Flathub repository
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    - name: Install Flatpak applications
+      community.general.flatpak:
+        name: "{{ item }}"
+        state: present
+        remote: flathub
+      loop: "{{ flatpaks }}"
