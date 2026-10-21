@@ -7,8 +7,18 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "language_models": {
+    "opencode": {
+      "show_go_models": true,
+      "show_zen_models": false
+    }
+  },
+  "cli_default_open_behavior": "existing_window",
   "agent_servers": {
     "opencode": {
+      "default_config_options": {
+        "model": "opencode/minimax-m3.1-flash-free"
+      },
       "type": "registry"
     }
   },
